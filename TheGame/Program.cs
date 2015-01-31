@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Box2DX.Collision;
+using Box2DX.Common;
+using Box2DX.Dynamics;
 using SFML.Graphics;
 using SFML.Window;
-using Box2DX;
-using Box2DX.Dynamics;
-using Box2DX.Collision;
-using Box2DX.Common;
-using System.Reflection;
+using System;
 using System.IO;
 
 namespace TheGame
@@ -15,15 +12,15 @@ namespace TheGame
     {
         public static bool IsRunning { get; private set; }
 
-        public static Jukebox Jukebox { get; private set; }
-
         public static void Main()
         {
             if (!Directory.Exists(Directories.DataDirectory))
                 return;
 
-            Jukebox = new Jukebox(Directories.MusicDirectory);
-            Jukebox.Play();
+            var playerInput = new PlayerInput();
+
+            var jukebox = new Jukebox(Directories.MusicDirectory);
+            jukebox.Play();
 
             var textureManager = new TextureManager(Directories.TextureDirectory);
             var background = textureManager.GetTexture("background");
@@ -33,7 +30,8 @@ namespace TheGame
             var rendow = new RenderWindow(new VideoMode(800, 600), "Sirtoli Racing", Styles.Close);
             IsRunning = true;
             rendow.Closed += OnRendowClosed;
-            rendow.KeyReleased += OnKeyReleased;
+            rendow.KeyPressed += playerInput.OnKeyPressed;
+            rendow.KeyReleased += playerInput.OnKeyReleased;
 
             do
             {
@@ -41,34 +39,33 @@ namespace TheGame
                 rendow.Display();
 
                 physicsWorld.Step(1 / 60F, 1, 1);
+
+                playerInput.PreUpdate();
                 rendow.DispatchEvents();
 
-            } while (IsRunning);
-        }
+                if (playerInput.PreviousSong)
+                {
+                    jukebox.PlayPrevious();
+                }
 
-        static void OnKeyReleased(object sender, KeyEventArgs e)
-        {
-            switch (e.Code)
-            {
-                case Keyboard.Key.I:
-                    Jukebox.PlayPrevious();
-                    break;
+                if (playerInput.NextSong)
+                {
+                    jukebox.PlayNext();
+                }
 
-                case Keyboard.Key.O:
-                    Jukebox.PlayNext();
-                    break;
-
-                case Keyboard.Key.P:
-                    if (Jukebox.IsPlaying)
+                if (playerInput.ToggleRadio)
+                {
+                    if (jukebox.IsPlaying)
                     {
-                        Jukebox.Stop();
+                        jukebox.Stop();
                     }
                     else
                     {
-                        Jukebox.Play();
+                        jukebox.Play();
                     }
-                    break;
-            }
+                }
+
+            } while (IsRunning);
         }
 
         private static void OnRendowClosed(object sender, EventArgs e)
