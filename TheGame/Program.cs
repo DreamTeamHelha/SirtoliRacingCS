@@ -41,6 +41,7 @@ namespace TheGame
                 physicsWorld.Step(1 / 60F, 1, 1);
 
                 playerInput.PreUpdate();
+                jukebox.Update();
                 rendow.DispatchEvents();
 
                 if (playerInput.PreviousSong)

@@ -126,6 +126,19 @@ namespace TheGame
             _song = null;
         }
 
+        /// <summary>
+        /// À appeller régulièrement pour que le jukebox joue tout seul.
+        /// </summary>
+        public void Update()
+        {
+            if (_song == null) return;
+
+            if (_song.Status == SoundStatus.Stopped)
+            {
+                PlayNext();
+            }
+        }
+
         #region Interne
 
         /// <summary>
