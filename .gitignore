@@ -1,5 +1,6 @@
 TheGame/obj/*
 TheGame/bin/*
+packages/*
 
 .DS_Store
 AfterQuit
