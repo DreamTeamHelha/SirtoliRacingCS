@@ -9,8 +9,6 @@ Thumbs.db
 *.DotSettings
 *.DotSettings.user
 *.userprefs
-*.sln
-*.csproj
 *.unityproj
 *.pidb
 *.suo
