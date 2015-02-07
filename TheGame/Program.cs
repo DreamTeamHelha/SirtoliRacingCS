@@ -20,12 +20,17 @@ namespace TheGame
             var playerInput = new PlayerInput();
 
             var jukebox = new Jukebox(Directories.MusicDirectory);
-            jukebox.Play();
 
             var textureManager = new TextureManager(Directories.TextureDirectory);
             var background = textureManager.GetTexture("background");
 
             var physicsWorld = new World(new AABB(), new Vec2(0F, 0F), true);
+
+            var loader = new TilemapLoader();
+            loader.GroundColors.Add(new SFML.Graphics.Color(56, 52, 51), GroundType.Asphalt);
+            loader.GroundColors.Add(new SFML.Graphics.Color(91, 65, 32), GroundType.Mud);
+            var trackSource = new Image(Path.Combine(Directories.TrackDirectory, "Raph_Paradise.png"));
+            var tilemap = loader.Load(trackSource);
 
             var rendow = new RenderWindow(new VideoMode(800, 600), "Sirtoli Racing", Styles.Close);
             IsRunning = true;
@@ -33,6 +38,7 @@ namespace TheGame
             rendow.KeyPressed += playerInput.OnKeyPressed;
             rendow.KeyReleased += playerInput.OnKeyReleased;
 
+            jukebox.Play();
             do
             {
                 rendow.Draw(new Sprite(background));
