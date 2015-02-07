@@ -31,17 +31,24 @@ namespace TheGame
             loader.GroundColors.Add(new SFML.Graphics.Color(91, 65, 32), GroundType.Mud);
             var trackSource = new Image(Path.Combine(Directories.TrackDirectory, "Raph_Paradise.png"));
             var tilemap = loader.Load(trackSource);
+            var tilemapRenderer = new TilemapRenderer();
+            tilemapRenderer.Tiles.Add(GroundType.Grass, new Sprite(textureManager.GetTexture("GrassTile")));
+            tilemapRenderer.Tiles.Add(GroundType.Asphalt, new Sprite(textureManager.GetTexture("RoadTile")));
+            tilemapRenderer.Tiles.Add(GroundType.Mud, new Sprite(textureManager.GetTexture("MudTile")));
 
             var rendow = new RenderWindow(new VideoMode(800, 600), "Sirtoli Racing", Styles.Close);
+            rendow.SetKeyRepeatEnabled(false);
+            rendow.SetFramerateLimit(30);
             IsRunning = true;
             rendow.Closed += OnRendowClosed;
             rendow.KeyPressed += playerInput.OnKeyPressed;
             rendow.KeyReleased += playerInput.OnKeyReleased;
 
             jukebox.Play();
+
             do
             {
-                rendow.Draw(new Sprite(background));
+                tilemapRenderer.Render(rendow, tilemap, RenderStates.Default);
                 rendow.Display();
 
                 physicsWorld.Step(1 / 60F, 1, 1);
@@ -71,6 +78,14 @@ namespace TheGame
                         jukebox.Play();
                     }
                 }
+
+                var view = rendow.GetView();
+                var deltaPos = new Vector2f();
+                deltaPos.X += playerInput.Turn;
+                deltaPos.Y += playerInput.Braking;
+                deltaPos.Y -= playerInput.Throttle;
+                view.Center = view.Center + deltaPos * 15F;
+                rendow.SetView(view);
 
             } while (IsRunning);
         }

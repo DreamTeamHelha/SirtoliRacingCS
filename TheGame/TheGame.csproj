@@ -86,6 +86,7 @@
     <Compile Include="TextureManager.cs" />
     <Compile Include="Tilemap.cs" />
     <Compile Include="TilemapLoader.cs" />
+    <Compile Include="TilemapRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.ico" />

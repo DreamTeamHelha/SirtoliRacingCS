@@ -39,7 +39,7 @@ namespace TheGame
         public Tilemap Load(Image sourceImage)
         {
             if (sourceImage == null)
-                throw new ArgumentNullException("'sourceImage'");
+                throw new ArgumentNullException("sourceImage");
 
             var mapWidth = sourceImage.Size.X;
             var mapHeight = sourceImage.Size.Y;
